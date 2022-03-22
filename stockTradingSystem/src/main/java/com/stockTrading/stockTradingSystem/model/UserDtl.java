@@ -2,7 +2,7 @@ package com.stockTrading.stockTradingSystem.model;
 
         import javax.persistence.*;
 
-@Entity
+@Entity(name = "UserDtl")
 @Table(
         name="UserDtl",
         uniqueConstraints= @UniqueConstraint(columnNames={"username", "email"})

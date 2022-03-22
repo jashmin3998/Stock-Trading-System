@@ -1,9 +1,13 @@
 package com.stockTrading.stockTradingSystem.service;
 
+import com.stockTrading.stockTradingSystem.model.Response;
 import com.stockTrading.stockTradingSystem.model.UserDtl;
 import com.stockTrading.stockTradingSystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -12,7 +16,41 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     @Override
-    public UserDtl saveUser(UserDtl user) {
-        return userRepository.save(user);
+    public Response saveUser(UserDtl user) {
+        Response res;
+        try{
+            userRepository.save(user);
+            res = new Response(true,"");
+        }
+        catch (Exception e){
+            System.out.println("UserServiceImpl: Registration Failed");
+            res = new Response(false,"Registration Failed");
+            return res;
+        }
+
+        return res;
     }
+
+    @Override
+    public Response getUser(String username, String pwd) {
+        Response res;
+        try{
+            UserDtl user = userRepository.findByUsernamepAndPwd(username, pwd);
+            if(user != null){
+                return new Response(true, "");
+            }
+            else
+                return new Response(false,"Login Failed");
+
+        }
+        catch (Exception e){
+            System.out.println("UserServiceImpl: Login Failed");
+            return new Response(false,"Login Failed");
+        }
+
+
+    }
+
+
+
 }

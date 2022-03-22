@@ -16,8 +16,16 @@ public class Stocks {
     private String name;
     private String stockSymbol;
     private long total_quantity;
-    private long intial_price;
+    private long purchased_quantity;
     private Date creation_time;
+
+
+
+    public Stocks(){
+
+    }
+
+
 
     public Date getCreation_time() {
         return creation_time;
@@ -59,12 +67,12 @@ public class Stocks {
         this.total_quantity = total_quantity;
     }
 
-    public long getIntial_price() {
-        return intial_price;
+    public long getPurchased_quantity() {
+        return purchased_quantity;
     }
 
-    public void setIntial_price(long intial_price) {
-        this.intial_price = intial_price;
+    public void setPurchased_quantity(long purchased_quantity) {
+        this.purchased_quantity = purchased_quantity;
     }
 
 

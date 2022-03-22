@@ -1,7 +1,11 @@
 package com.stockTrading.stockTradingSystem.controller;
 
+import com.stockTrading.stockTradingSystem.model.Response;
 import com.stockTrading.stockTradingSystem.model.UserDtl;
+import com.stockTrading.stockTradingSystem.model.request.LoginRequest;
 import com.stockTrading.stockTradingSystem.service.UserService;
+
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -16,15 +20,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/add")
-    public String add(@RequestBody UserDtl user){
-        System.out.println("post request");
-        userService.saveUser(user);
-        return  "added successfully";
+    @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response add(@RequestBody UserDtl user){
+        System.out.println("UserRestController:  post request /add");
+        return  userService.saveUser(user);
     }
 
-    @GetMapping("/get")
-    public String get(){
-        return "success";
+    @PostMapping (path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response get(@RequestBody LoginRequest loginRequest){
+        System.out.println("UserRestController:  post request /login");
+        return userService.getUser(loginRequest.getUsername(), loginRequest.getPwd());
     }
 }
