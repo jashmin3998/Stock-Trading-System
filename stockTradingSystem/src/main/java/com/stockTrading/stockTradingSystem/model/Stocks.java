@@ -5,27 +5,46 @@ import java.sql.Date;
 
 @Entity
 @Table(
-        name="Stocks",
+        name="stocks",
         uniqueConstraints= @UniqueConstraint(columnNames={"name", "stockSymbol"})
 )
 public class Stocks {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "stock_id")
     private int stocksId;
     private String name;
     private String stockSymbol;
     private long total_quantity;
     private long purchased_quantity;
     private Date creation_time;
+    @Column(precision=2, scale = 6)
+    private float price;
 
-
+    /*@OneToOne(mappedBy = "stocks", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private StockPrice stockPrice;*/
 
     public Stocks(){
 
     }
 
+    public Stocks(String name, String stockSymbol, long total_quantity, long purchased_quantity, Date creation_time) {
+        this.name = name;
+        this.stockSymbol = stockSymbol;
+        this.total_quantity = total_quantity;
+        this.purchased_quantity = purchased_quantity;
+        this.creation_time = creation_time;
+    }
 
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
+    }
 
     public Date getCreation_time() {
         return creation_time;
