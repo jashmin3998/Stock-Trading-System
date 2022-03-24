@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class StocksServiceImpl implements  StocksService{
@@ -38,6 +39,18 @@ public class StocksServiceImpl implements  StocksService{
             return res;
         }
         return res;
+    }
+
+    @Override
+    public List<Stocks> getAllStocks() {
+        List<Stocks> allStocks;
+        try{
+            allStocks = stockRepository.findAll();
+        } catch (Exception e){
+            System.out.println("StocksServiceImpl: Insertion Failed");
+            return null;
+        }
+        return allStocks;
     }
 
 }

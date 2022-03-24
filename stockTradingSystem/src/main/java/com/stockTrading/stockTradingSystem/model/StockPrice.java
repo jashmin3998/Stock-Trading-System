@@ -15,7 +15,7 @@ public class StockPrice {
     private int stId;
     @Column(precision=5, scale = 5)
     private float price;
-    private Date updated_time;
+    private long updated_time;
 
 //    @OneToOne(fetch = FetchType.LAZY)
 //    private Stocks stocks;
@@ -25,7 +25,7 @@ public class StockPrice {
 
     }
 
-    public StockPrice(int stockId, float price, Date updated_time) {
+    public StockPrice(int stockId, float price, long updated_time) {
         this.stId = stockId;
         this.price = price;
         this.updated_time = updated_time;
@@ -49,11 +49,11 @@ public class StockPrice {
         this.price = price;
     }
 
-    public Date getUpdated_time() {
+    public long getUpdated_time() {
         return updated_time;
     }
 
-    public void setUpdated_time(Date updated_time) {
+    public void setUpdated_time(long updated_time) {
         this.updated_time = updated_time;
     }
 

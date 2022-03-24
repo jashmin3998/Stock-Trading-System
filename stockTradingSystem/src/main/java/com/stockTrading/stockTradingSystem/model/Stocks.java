@@ -19,7 +19,7 @@ public class Stocks {
     private String stockSymbol;
     private long total_quantity;
     private long purchased_quantity;
-    private Date creation_time;
+    private long creation_time;
     @Column(precision=2, scale = 6)
     private float price;
 
@@ -30,7 +30,7 @@ public class Stocks {
 
     }
 
-    public Stocks(String name, String stockSymbol, long total_quantity, long purchased_quantity, Date creation_time) {
+    public Stocks(String name, String stockSymbol, long total_quantity, long purchased_quantity, long creation_time) {
         this.name = name;
         this.stockSymbol = stockSymbol;
         this.total_quantity = total_quantity;
@@ -46,11 +46,11 @@ public class Stocks {
         this.price = price;
     }
 
-    public Date getCreation_time() {
+    public long getCreation_time() {
         return creation_time;
     }
 
-    public void setCreation_time(Date creation_time) {
+    public void setCreation_time(long creation_time) {
         this.creation_time = creation_time;
     }
 
