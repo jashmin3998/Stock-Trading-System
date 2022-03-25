@@ -17,24 +17,18 @@ public class StocksServiceImpl implements  StocksService{
 
     @Autowired
     private StocksRepository stockRepository;
-    @Autowired
-    private StockPriceService stockPriceService;
+
 
 
     @Override
     public Response saveStocks(Stocks stock) {
         Response res;
         try{
-            Stocks st = stockRepository.save(stock);
-            if(st != null){
-                StockPrice sp = new StockPrice(st.getStocksId(), st.getPrice(), st.getCreation_time());
-                stockPriceService.saveStockPrice(sp);
-
-            }
-
-            res = new Response(true,"");
+            stockRepository.save(stock);
+            res = new Response(true,"Successfully Inserted");
         } catch (Exception e){
             System.out.println("StocksServiceImpl: Insertion Failed");
+            e.printStackTrace();
             res = new Response(false,"Insertion Failed");
             return res;
         }

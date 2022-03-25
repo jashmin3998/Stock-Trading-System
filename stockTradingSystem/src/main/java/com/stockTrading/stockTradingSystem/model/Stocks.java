@@ -1,73 +1,55 @@
 package com.stockTrading.stockTradingSystem.model;
 
+
 import javax.persistence.*;
-import java.sql.Date;
 
 @Entity
 @Table(
-        name="stocks",
+        name = "stocks",
         uniqueConstraints= @UniqueConstraint(columnNames={"name", "stockSymbol"})
 )
 public class Stocks {
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "stock_id")
-    private int stocksId;
+    @SequenceGenerator(
+            name = "stocks_sequence",
+            sequenceName = "stocks_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "stocks_sequence"
+    )
+    private long stockId;
     private String name;
     private String stockSymbol;
-    private long total_quantity;
-    private long purchased_quantity;
-    private long creation_time;
+    private long totalQuantity;
+    private long purchasedQuantity;
+    private long creationTime;
     @Column(precision=2, scale = 6)
-    private float price;
+    private double price;
+//    @OneToOne(
+//            mappedBy = "stocks",
+//            cascade = CascadeType.ALL
+//    )
+//    private StockPrice stockPrice;
+//
+//    public StockPrice getStockPrice() {
+//        return stockPrice;
+//    }
+//
+//    public void setStockPrice(StockPrice stockPrice) {
+//        this.stockPrice = stockPrice;
+//    }
 
-    /*@OneToOne(mappedBy = "stocks", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private StockPrice stockPrice;*/
 
-    public Stocks(){
-
-    }
-
-    public Stocks(String name, String stockSymbol, long total_quantity, long purchased_quantity, long creation_time) {
+    public Stocks(String name, String stockSymbol, long totalQuantity, long purchasedQuantity, long creationTime, double price) {
         this.name = name;
         this.stockSymbol = stockSymbol;
-        this.total_quantity = total_quantity;
-        this.purchased_quantity = purchased_quantity;
-        this.creation_time = creation_time;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(long price) {
+        this.totalQuantity = totalQuantity;
+        this.purchasedQuantity = purchasedQuantity;
+        this.creationTime = creationTime;
         this.price = price;
-    }
-
-    public long getCreation_time() {
-        return creation_time;
-    }
-
-    public void setCreation_time(long creation_time) {
-        this.creation_time = creation_time;
-    }
-
-
-
-    public String getStockSymbol() {
-        return stockSymbol;
-    }
-
-    public void setStockSymbol(String stockSymbol) {
-        this.stockSymbol = stockSymbol;
-    }
-
-
-
-    public int getStocksId() {
-        return stocksId;
     }
 
     public String getName() {
@@ -78,20 +60,48 @@ public class Stocks {
         this.name = name;
     }
 
-    public long getTotal_quantity() {
-        return total_quantity;
+    public String getStockSymbol() {
+        return stockSymbol;
     }
 
-    public void setTotal_quantity(long total_quantity) {
-        this.total_quantity = total_quantity;
+    public void setStockSymbol(String stockSymbol) {
+        this.stockSymbol = stockSymbol;
     }
 
-    public long getPurchased_quantity() {
-        return purchased_quantity;
+    public long getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void setPurchased_quantity(long purchased_quantity) {
-        this.purchased_quantity = purchased_quantity;
+    public void setTotalQuantity(long totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
+    public long getPurchasedQuantity() {
+        return purchasedQuantity;
+    }
+
+    public void setPurchasedQuantity(long purchasedQuantity) {
+        this.purchasedQuantity = purchasedQuantity;
+    }
+
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Stocks(){
+
     }
 
 

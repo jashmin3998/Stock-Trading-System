@@ -6,6 +6,8 @@ import com.stockTrading.stockTradingSystem.repository.StockPriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StockPriceServiceImpl implements StockPriceService {
 
@@ -28,4 +30,11 @@ public class StockPriceServiceImpl implements StockPriceService {
 
         return res;
     }
+
+    @Override
+    public List<StockPrice> getStocksPrice() {
+        return stockPriceRepository.findAll();
+    }
+
+
 }

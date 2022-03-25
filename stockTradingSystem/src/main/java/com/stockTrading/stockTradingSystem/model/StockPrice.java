@@ -8,56 +8,104 @@ import java.sql.Date;
 public class StockPrice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "stock_price_sequence",
+            sequenceName = "stock_price_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "stock_price_sequence"
+    )
     @Column(name = "sp_id")
     private long spId;
-
-    private int stId;
+    //private long stockId;
     @Column(precision=5, scale = 5)
-    private float price;
-    private long updated_time;
+    private double price;
+    private long updatedTime;
+    private double todayHigh;
+    private double todayLow;
+    private double preClose;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    private Stocks stocks;
+    @OneToOne(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(
+            name = "stock_id",
+            referencedColumnName = "stockId"
+    )
+    private Stocks stocks;
 
+    public StockPrice(double price, long updatedTime, double todayHigh, double todayLow, double preClose, Stocks stocks) {
+        this.price = price;
+        this.updatedTime = updatedTime;
+        this.todayHigh = todayHigh;
+        this.todayLow = todayLow;
+        this.preClose = preClose;
+        this.stocks =stocks;
+    }
 
     public StockPrice() {
 
     }
 
-    public StockPrice(int stockId, float price, long updated_time) {
-        this.stId = stockId;
-        this.price = price;
-        this.updated_time = updated_time;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "stock_price_stocks",
+            joinColumns = @JoinColumn(name = "stock_price_sp_id"),
+            inverseJoinColumns = @JoinColumn(name = "stocks_stock_id"))
+
+
+    public Stocks getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(Stocks stocks) {
+        this.stocks = stocks;
     }
 
 
-
-    public int getStId() {
-        return stId;
+    public long getSpId() {
+        return spId;
     }
 
-    public void setStId(int stId) {
-        this.stId = stId;
-    }
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public long getUpdated_time() {
-        return updated_time;
+    public long getUpdatedTime() {
+        return updatedTime;
     }
 
-    public void setUpdated_time(long updated_time) {
-        this.updated_time = updated_time;
+    public void setUpdatedTime(long updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
-    public long getSp_id() {
-        return spId;
+    public double getTodayHigh() {
+        return todayHigh;
+    }
+
+    public void setTodayHigh(double todayHigh) {
+        this.todayHigh = todayHigh;
+    }
+
+    public double getTodayLow() {
+        return todayLow;
+    }
+
+    public void setTodayLow(double todayLow) {
+        this.todayLow = todayLow;
+    }
+
+    public double getPreClose() {
+        return preClose;
+    }
+
+    public void setPreClose(double preClose) {
+        this.preClose = preClose;
     }
 }

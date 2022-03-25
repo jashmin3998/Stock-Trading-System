@@ -2,40 +2,24 @@ package com.stockTrading.stockTradingSystem.model;
 
         import javax.persistence.*;
 
-@Entity(name = "UserDtl")
+@Entity
 @Table(
-        name="UserDtl",
         uniqueConstraints= @UniqueConstraint(columnNames={"username", "email"})
 )
 public class UserDtl {
 
-    public int getUserid() {
-        return Userid;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Userid;
+    private long userId;
     private String firstname;
     private String lastname;
-
     private String username;
-
     private String email;
     private String pwd;
     @Enumerated
     private UserRole userRole;
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
-
-    public UserDtl(){
-
-    }
+    private double cashBalance;
+    private long creationTime;
 
     public String getFirstname() {
         return firstname;
@@ -77,5 +61,27 @@ public class UserDtl {
         this.pwd = pwd;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
 
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
+    public double getCashBalance() {
+        return cashBalance;
+    }
+
+    public void setCashBalance(double cashBalance) {
+        this.cashBalance = cashBalance;
+    }
+
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
 }
