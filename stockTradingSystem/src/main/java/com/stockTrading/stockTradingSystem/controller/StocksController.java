@@ -3,11 +3,14 @@ package com.stockTrading.stockTradingSystem.controller;
 import com.stockTrading.stockTradingSystem.model.Response;
 import com.stockTrading.stockTradingSystem.model.StockPrice;
 import com.stockTrading.stockTradingSystem.model.Stocks;
+import com.stockTrading.stockTradingSystem.model.TransactionDtl;
 import com.stockTrading.stockTradingSystem.service.StockPriceService;
 import com.stockTrading.stockTradingSystem.service.StocksService;
+import com.stockTrading.stockTradingSystem.service.TransactionDtlService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -15,12 +18,17 @@ import java.util.List;
 public class StocksController {
 
     private StocksService stocksService;
-    StockPriceService stockPriceService;
+    private StockPriceService stockPriceService;
+    private TransactionDtlService transactionDtlService;
 
-    public StocksController(StocksService stocksService, StockPriceService stockPriceService){
+
+    public StocksController(StocksService stocksService,
+                            StockPriceService stockPriceService,
+                            TransactionDtlService transactionDtlService){
         super();
         this.stocksService = stocksService;
         this.stockPriceService = stockPriceService;
+        this.transactionDtlService = transactionDtlService;
     }
 
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,5 +54,18 @@ public class StocksController {
     @GetMapping(path="get", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StockPrice> getStocksPrice(){
         return stockPriceService.getStocksPrice();
+    }
+
+    //stocks buy sell
+
+    @PostMapping(path="transaction", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response addStockTransaction(@RequestBody TransactionDtl transaction){
+        transaction.setTransactionTime(System.currentTimeMillis());
+        return transactionDtlService.addStockTransaction(transaction);
+    }
+
+    @GetMapping(path="transactionHistory", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<TransactionDtl> getAllTransactionByUsername(@RequestBody long userId){
+        return transactionDtlService.getAllStockTransactionByUsername(userId);
     }
 }

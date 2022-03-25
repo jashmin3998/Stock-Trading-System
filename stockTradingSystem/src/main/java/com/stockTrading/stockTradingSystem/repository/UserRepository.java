@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<UserDtl, Integer> {
 
     @Query(value = "select u from UserDtl u where u.username=?1 and u.pwd=?2")
     UserDtl findByUsernamepAndPwd(String username, String pwd);
+
+    UserDtl findByUsername(String username);
 }

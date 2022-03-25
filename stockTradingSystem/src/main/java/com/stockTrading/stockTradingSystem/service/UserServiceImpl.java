@@ -17,18 +17,17 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Response saveUser(UserDtl user) {
-        Response res;
+
         try{
             userRepository.save(user);
-            res = new Response(true,"");
+            return new Response(true,"");
         }
         catch (Exception e){
             System.out.println("UserServiceImpl: Registration Failed");
-            res = new Response(false,"Registration Failed");
-            return res;
+            return new Response(false,"Registration Failed");
+
         }
 
-        return res;
     }
 
     @Override

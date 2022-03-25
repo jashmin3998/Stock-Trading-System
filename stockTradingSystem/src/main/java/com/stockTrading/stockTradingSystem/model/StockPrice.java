@@ -1,10 +1,19 @@
 package com.stockTrading.stockTradingSystem.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
 @Table(name = "Stock_price")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class StockPrice {
 
     @Id
@@ -45,9 +54,7 @@ public class StockPrice {
         this.stocks =stocks;
     }
 
-    public StockPrice() {
 
-    }
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "stock_price_stocks",
