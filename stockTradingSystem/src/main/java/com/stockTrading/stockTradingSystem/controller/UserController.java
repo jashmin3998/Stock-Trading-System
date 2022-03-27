@@ -1,5 +1,6 @@
 package com.stockTrading.stockTradingSystem.controller;
 
+import com.stockTrading.stockTradingSystem.Exception.InvalidUserException;
 import com.stockTrading.stockTradingSystem.model.CashTransaction;
 import com.stockTrading.stockTradingSystem.model.Response;
 import com.stockTrading.stockTradingSystem.model.UserDtl;
@@ -29,7 +30,8 @@ public class UserController {
     }
 
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response add(@RequestBody UserDtl user){
+    public Response add(@RequestBody UserDtl user) throws InvalidUserException {
+        //throw  new InvalidUserException("Invalid User");
         System.out.println("UserRestController:  post request /add");
         user.setCreationTime(System.currentTimeMillis());
         return  userService.saveUser(user);

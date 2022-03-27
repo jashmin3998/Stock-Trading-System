@@ -41,12 +41,12 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
 
             if(transactionDtl.getTransactionType() == 0){
                 //pre validations
-                if(user.getCashBalance() < transactionDtl.getTotalAmount() ||
-                        (purchasedStocks + stockQuantity) < stock.getTotalQuantity())
+                if(user.getCashBalance() < totalAmount ||
+                        (purchasedStocks + stockQuantity) > stock.getTotalQuantity())
                     return new Response(true,"Stocks Purchase Failed");
 
                 //updating user attribute
-                user.setCashBalance(currentCashBalance - transactionDtl.getTotalAmount());
+                user.setCashBalance(currentCashBalance - totalAmount);
                 user.setUsedCash(usedCashBalance + totalAmount);
 
 
@@ -55,12 +55,11 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
             }
             else {
                 //pre validations
-                if(user.getCashBalance() < transactionDtl.getTotalAmount() ||
-                        (purchasedStocks + stockQuantity) < stock.getTotalQuantity())
-                    return new Response(true,"Stocks Purchase Failed");
+                if(getAvailableStocks(user.getUserId(), stock.getStockId()) < stockQuantity)
+                    return new Response(true,"Stocks sell Failed");
 
                 //updating user attribute
-                user.setCashBalance(currentCashBalance + transactionDtl.getTotalAmount());
+                user.setCashBalance(currentCashBalance + totalAmount);
                 user.setUsedCash(usedCashBalance - totalAmount);
 
 
@@ -71,12 +70,13 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
 
             //updating transaction attribute
             transactionDtl.setTotalAmount(totalAmount);
+            transactionDtl.setPurchasedRate(stockCurrentRate);
             transactionDtl.setUser(user);
             transactionDtl.setStock(stock);
 
             //saving the transaction
             transactionDtlRepository.save(transactionDtl);
-            return new Response(true,"Stocks Purchased Successfully");
+            return new Response(true,"Stocks Purchased/sell Successfully");
 
         }
         catch (Exception e){
@@ -85,7 +85,19 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
     }
 
     @Override
-    public List<TransactionDtl> getAllStockTransactionByUsername(long userId) {
+    public List<TransactionDtl> getAllStockTransactionByUserId(long userId) {
         return transactionDtlRepository.findByUserUserId(userId);
+    }
+
+    public long getAvailableStocks(long userId, long stockId){
+        try {
+            long y = transactionDtlRepository.getSoldStocks(userId, stockId);
+            long x = transactionDtlRepository.getPurchasedStocks(userId, stockId);
+            return ( x-y );
+        }
+        catch(Exception e){
+            System.out.print("getAvailableStocks Exception");
+            return 0;
+        }
     }
 }

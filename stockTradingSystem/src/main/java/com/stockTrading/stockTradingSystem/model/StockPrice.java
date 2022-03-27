@@ -1,5 +1,6 @@
 package com.stockTrading.stockTradingSystem.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,7 @@ public class StockPrice {
             name = "stock_id",
             referencedColumnName = "stockId"
     )
+    @JsonBackReference
     private Stocks stocks;
 
     public StockPrice(double price, long updatedTime, double todayHigh, double todayLow, double preClose, Stocks stocks) {

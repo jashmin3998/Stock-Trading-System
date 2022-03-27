@@ -6,6 +6,7 @@ import com.stockTrading.stockTradingSystem.repository.StockPriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -30,6 +31,24 @@ public class StockPriceServiceImpl implements StockPriceService {
     @Override
     public List<StockPrice> getStocksPrice() {
         return stockPriceRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public int updateAllStocks() {
+        return stockPriceRepository.updateStockPrice();
+    }
+
+    @Transactional
+    @Override
+    public int updateTodayHigh() {
+        return stockPriceRepository.updateTodayHighPrice();
+    }
+
+    @Transactional
+    @Override
+    public int updateTodayLow() {
+        return stockPriceRepository.updateTodayLowPrice();
     }
 
 

@@ -8,6 +8,6 @@ import java.util.List;
 public interface TransactionDtlService {
 
     public Response addStockTransaction(TransactionDtl transactionDtl);
-    public List<TransactionDtl> getAllStockTransactionByUsername(long userId);
+    public List<TransactionDtl> getAllStockTransactionByUserId(long userId);
 
 }

@@ -8,4 +8,7 @@ import java.util.List;
 public interface StockPriceService {
     public Response saveStockPrice(StockPrice stockPrice);
     public List<StockPrice> getStocksPrice();
+    public int updateAllStocks();
+    public int updateTodayHigh();
+    public int updateTodayLow();
 }

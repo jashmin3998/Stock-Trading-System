@@ -46,9 +46,11 @@ public class StocksController {
         //stocksService.saveStocks(stock);
     }
 
-    @GetMapping(path = "allstocks", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "allstocks")
     public List<Stocks> getStocks(){
-        return stocksService.getAllStocks();
+        List<Stocks> s =stocksService.getAllStocks();
+        System.out.println("get all Stocks");
+        return s;
     }
 
     @GetMapping(path="get", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,6 +68,6 @@ public class StocksController {
 
     @GetMapping(path="transactionHistory", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionDtl> getAllTransactionByUsername(@RequestBody long userId){
-        return transactionDtlService.getAllStockTransactionByUsername(userId);
+        return transactionDtlService.getAllStockTransactionByUserId(userId);
     }
 }

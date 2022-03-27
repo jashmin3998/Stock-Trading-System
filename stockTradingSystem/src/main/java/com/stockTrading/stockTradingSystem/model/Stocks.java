@@ -1,6 +1,7 @@
 package com.stockTrading.stockTradingSystem.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,7 @@ public class Stocks {
             mappedBy = "stocks",
            cascade = CascadeType.ALL
     )
+    @JsonManagedReference
     private StockPrice stockPrice;
 
 
