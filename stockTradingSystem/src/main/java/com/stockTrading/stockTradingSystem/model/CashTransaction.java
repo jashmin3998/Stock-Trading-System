@@ -20,8 +20,8 @@ public class CashTransaction {
     private long ctId;
 
     private double amount;
-    private long transaction_time;
-    private int transaction_type;  //deposite 0 withdraw 1
+    private long transactionTime;
+    private int transactionType;  //deposite 0 withdraw 1
 
     @ManyToOne(
             cascade = CascadeType.ALL

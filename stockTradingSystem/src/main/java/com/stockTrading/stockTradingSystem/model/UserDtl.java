@@ -1,5 +1,7 @@
 package com.stockTrading.stockTradingSystem.model;
 
+        import com.fasterxml.jackson.annotation.JsonIgnore;
+        import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
         import lombok.AllArgsConstructor;
         import lombok.Getter;
         import lombok.NoArgsConstructor;
@@ -8,6 +10,7 @@ package com.stockTrading.stockTradingSystem.model;
         import javax.persistence.*;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Table(
         uniqueConstraints= @UniqueConstraint(columnNames={"username", "email"})
 )
@@ -24,6 +27,7 @@ public class UserDtl {
     private String lastname;
     private String username;
     private String email;
+    @JsonIgnoreProperties(allowSetters = true)
     private String pwd;
     @Enumerated
     private UserRole userRole;

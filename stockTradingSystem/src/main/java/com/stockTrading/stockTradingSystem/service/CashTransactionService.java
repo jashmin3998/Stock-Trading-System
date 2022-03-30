@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface CashTransactionService {
     public Response addCashTransaction(CashTransaction transaction);
-    public List<CashTransaction> getAllTransactionById(long userId);
+    public List<CashTransaction> getAllTransactionById(String username);
+
 }

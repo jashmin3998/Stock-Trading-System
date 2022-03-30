@@ -18,14 +18,8 @@ public class StockPriceServiceImpl implements StockPriceService {
 
     @Override
     public Response saveStockPrice(StockPrice stockPrice) {
-        try{
-            stockPriceRepository.save(stockPrice);
-            return new Response(true,"");
-        }
-        catch (Exception e){
-            System.out.println("UserServiceImpl: Registration Failed");
-            return new Response(false,"Registration Failed");
-        }
+        stockPriceRepository.save(stockPrice);
+        return new Response(true,"Stock saved Successfully");
     }
 
     @Override

@@ -1,12 +1,12 @@
 package com.stockTrading.stockTradingSystem.controller;
 
-import com.stockTrading.stockTradingSystem.model.Response;
-import com.stockTrading.stockTradingSystem.model.StockPrice;
-import com.stockTrading.stockTradingSystem.model.Stocks;
-import com.stockTrading.stockTradingSystem.model.TransactionDtl;
+import com.stockTrading.stockTradingSystem.model.*;
+import com.stockTrading.stockTradingSystem.model.request.PortfolioResponse;
+import com.stockTrading.stockTradingSystem.service.LimitOrderTransactionService;
 import com.stockTrading.stockTradingSystem.service.StockPriceService;
 import com.stockTrading.stockTradingSystem.service.StocksService;
 import com.stockTrading.stockTradingSystem.service.TransactionDtlService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,19 +17,17 @@ import java.util.List;
 @RequestMapping("stocks")
 public class StocksController {
 
+    @Autowired
     private StocksService stocksService;
+    @Autowired
     private StockPriceService stockPriceService;
+    @Autowired
     private TransactionDtlService transactionDtlService;
+    @Autowired
+    private LimitOrderTransactionService limitOrderTransactionService;
 
 
-    public StocksController(StocksService stocksService,
-                            StockPriceService stockPriceService,
-                            TransactionDtlService transactionDtlService){
-        super();
-        this.stocksService = stocksService;
-        this.stockPriceService = stockPriceService;
-        this.transactionDtlService = transactionDtlService;
-    }
+
 
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response saveStocks(@RequestBody Stocks stock){
@@ -66,8 +64,36 @@ public class StocksController {
         return transactionDtlService.addStockTransaction(transaction);
     }
 
-    @GetMapping(path="transactionHistory", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TransactionDtl> getAllTransactionByUsername(@RequestBody long userId){
-        return transactionDtlService.getAllStockTransactionByUserId(userId);
+    @GetMapping(path="transaction-history", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<TransactionDtl> getAllTransactionByUsername(@RequestParam String username){
+        return transactionDtlService.getAllStockTransactionByUsername(username);
+    }
+
+
+    //display portfolio
+
+    @GetMapping(path="portfolio", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Object> getPortfolioByUsername(@RequestParam String username){
+        return transactionDtlService.getPortfolioByUsername(username);
+    }
+
+
+    //Limit Order Handling
+
+    @PostMapping(path = "add-limitorder", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response getPortfolioByUsername(@RequestBody LimitOrderTransaction limitOrderTransaction){
+        limitOrderTransaction.setTransactionTime(System.currentTimeMillis());
+        return  limitOrderTransactionService.addLimitOrder(limitOrderTransaction);
+    }
+
+    @GetMapping(path = "pending-orders", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<LimitOrderTransaction> getAllLimitOrderByUserUsername(@RequestParam String username){
+        return limitOrderTransactionService.getAllLimitOrderByUsername(username);
+    }
+
+    @DeleteMapping(path="remove-limit-order", produces = MediaType.APPLICATION_JSON_VALUE)
+    public int removeLimitOrder(@RequestParam long orderId){
+         limitOrderTransactionService.removeLimitOrder(orderId);
+         return 1;
     }
 }

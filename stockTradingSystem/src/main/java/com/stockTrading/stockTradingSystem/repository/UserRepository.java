@@ -1,5 +1,6 @@
 package com.stockTrading.stockTradingSystem.repository;
 
+import com.stockTrading.stockTradingSystem.model.LimitOrderTransaction;
 import com.stockTrading.stockTradingSystem.model.UserDtl;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -19,4 +20,18 @@ public interface UserRepository extends JpaRepository<UserDtl, Integer> {
     UserDtl findByUsernamepAndPwd(String username, String pwd);
 
     UserDtl findByUsername(String username);
+
+    UserDtl findByUserId(long userId);
+
+    @Query(
+            value = "update user_dtl set cash_balance = ?2 where userId = ?1",
+            nativeQuery = true
+    )
+    int updateCashBalance(long userId, double balance);
+
+    @Query(
+            value = "update user_dtl set used_cash = ?2 where userId = ?1",
+            nativeQuery = true
+    )
+    int updateUsedCashBalance(long userId, double balance);
 }

@@ -22,29 +22,13 @@ public class StocksServiceImpl implements  StocksService{
 
     @Override
     public Response saveStocks(Stocks stock) {
-        Response res;
-        try{
-            stockRepository.save(stock);
-            res = new Response(true,"Successfully Inserted");
-        } catch (Exception e){
-            System.out.println("StocksServiceImpl: Insertion Failed");
-            e.printStackTrace();
-            res = new Response(false,"Insertion Failed");
-            return res;
-        }
-        return res;
+        stockRepository.save(stock);
+        return new Response(true,"Successfully Inserted");
     }
 
     @Override
     public List<Stocks> getAllStocks() {
-        List<Stocks> allStocks;
-        try{
-            allStocks = stockRepository.findAll();
-        } catch (Exception e){
-            System.out.println("StocksServiceImpl: Insertion Failed");
-            return null;
-        }
-        return allStocks;
+        return stockRepository.findAll();
     }
 
 }

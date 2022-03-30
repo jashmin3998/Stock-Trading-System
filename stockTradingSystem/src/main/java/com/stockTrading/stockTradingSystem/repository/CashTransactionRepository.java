@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface CashTransactionRepository extends JpaRepository<CashTransaction, Long> {
 
-    List<CashTransaction> findByUserUserId(long userId);
+    List<CashTransaction> findByUserUsername(String username);
 }

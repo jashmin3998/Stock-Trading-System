@@ -24,29 +24,27 @@ public class CashTransactionServiceImpl implements CashTransactionService{
     @Transactional
     public Response addCashTransaction(CashTransaction transaction) {
 
-        try{
-            UserDtl user = userRepository.findByUsername(transaction.getUser().getUsername());
-            if(user == null)
-                return new Response(false,"Insertion Failed");
-            double totalAmount = 0 ;
-            if(transaction.getTransaction_type() == 0)
-                totalAmount = (transaction.getAmount() + user.getCashBalance());
+        double totalAmount = 0 ;
+        UserDtl user = userRepository.findByUsername(transaction.getUser().getUsername());
 
-            else if(transaction.getTransaction_type() == 1)
-                totalAmount =  user.getCashBalance() - transaction.getAmount();
-            user.setCashBalance(totalAmount);
-            transaction.setUser(user);
-            cashTransactionRepository.save(transaction);
-            return new Response(true,"Successfully Transaction");
-        } catch (Exception e){
-            System.out.println("CashTransactionServiceImpl: Insertion Failed");
-            e.printStackTrace();
-            return new Response(false,"Insertion Failed");
-        }
+        if(transaction.getTransactionType() == 0)
+            totalAmount = (transaction.getAmount() + user.getCashBalance());
+        else if(transaction.getTransactionType() == 1 && user.getCashBalance() > transaction.getAmount())
+            totalAmount =  user.getCashBalance() - transaction.getAmount();
+        else
+            return new Response(false,"Transaction Unsuccessful");
+
+        user.setCashBalance(totalAmount);
+        transaction.setUser(user);
+        cashTransactionRepository.save(transaction);
+        return new Response(true,"Transaction Successful");
+
     }
 
     @Override
-    public List<CashTransaction> getAllTransactionById(long userId) {
-        return cashTransactionRepository.findByUserUserId(userId);
+    public List<CashTransaction> getAllTransactionById(String username) {
+        return cashTransactionRepository.findByUserUsername(username);
     }
+
+
 }
