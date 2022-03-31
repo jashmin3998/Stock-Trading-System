@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -23,14 +24,16 @@ public interface UserRepository extends JpaRepository<UserDtl, Integer> {
 
     UserDtl findByUserId(long userId);
 
+    @Modifying
     @Query(
-            value = "update user_dtl set cash_balance = ?2 where userId = ?1",
+            value = "update user_dtl set cash_balance = ?2 where user_id = ?1",
             nativeQuery = true
     )
     int updateCashBalance(long userId, double balance);
 
+    @Modifying
     @Query(
-            value = "update user_dtl set used_cash = ?2 where userId = ?1",
+            value = "update user_dtl set used_cash = ?2 where user_id = ?1",
             nativeQuery = true
     )
     int updateUsedCashBalance(long userId, double balance);

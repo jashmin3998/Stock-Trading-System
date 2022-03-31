@@ -11,4 +11,6 @@ public interface StockPriceService {
     public int updateAllStocks();
     public int updateTodayHigh();
     public int updateTodayLow();
+    public double getCurrentPrice(long stockId);
+    public int updateOpenPrice();
 }

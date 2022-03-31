@@ -1,10 +1,8 @@
 package com.stockTrading.stockTradingSystem.service;
 
-import com.stockTrading.stockTradingSystem.model.Response;
-import com.stockTrading.stockTradingSystem.model.Stocks;
-import com.stockTrading.stockTradingSystem.model.TransactionDtl;
-import com.stockTrading.stockTradingSystem.model.UserDtl;
+import com.stockTrading.stockTradingSystem.model.*;
 import com.stockTrading.stockTradingSystem.model.request.PortfolioResponse;
+import com.stockTrading.stockTradingSystem.repository.MarketScheduleRepository;
 import com.stockTrading.stockTradingSystem.repository.StocksRepository;
 import com.stockTrading.stockTradingSystem.repository.TransactionDtlRepository;
 import com.stockTrading.stockTradingSystem.repository.UserRepository;
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +26,23 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
     @Autowired
     private StocksRepository stocksRepository;
 
+    @Autowired
+    private MarketScheduleRepository marketScheduleRepository;
+
     @Override
     @Transactional
     public Response addStockTransaction(TransactionDtl transactionDtl) {
         try{
+            MarketSchedule ms = marketScheduleRepository.getMarketScheduleByDates(LocalDate.now());
+
+            if(ms.getEndTime() < System.currentTimeMillis() || ms.getStartTime() > System.currentTimeMillis())
+                return new Response(false,"Market is closed. Please try again in market hours");
+
             UserDtl user = userRepository.findByUsername(transactionDtl.getUser().getUsername());
             Stocks stock = stocksRepository.findByStockSymbol(transactionDtl.getStock().getStockSymbol());
 
             if(user == null || stock == null)
-                return new Response(false,"Order not Placed");
+                return new Response(false,"Order Unsuccessful");
             double stockCurrentRate = stock.getStockPrice().getPrice();
             long stockQuantity = transactionDtl.getQuantity();
             double currentCashBalance = user.getCashBalance();
@@ -47,7 +54,7 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
                 //pre validations
                 if(user.getCashBalance() < totalAmount ||
                         (purchasedStocks + stockQuantity) > stock.getTotalQuantity())
-                    return new Response(true,"Stocks Purchase Failed");
+                    return new Response(false,"Order Unsuccessful");
 
                 //updating user attribute
                 user.setCashBalance(currentCashBalance - totalAmount);
@@ -60,7 +67,7 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
             else {
                 //pre validations
                 if(getAvailableStocks(user.getUserId(), stock.getStockId()) < stockQuantity)
-                    return new Response(true,"Stocks sell Failed");
+                    return new Response(false,"Order Unsuccessful");
 
                 //updating user attribute
                 user.setCashBalance(currentCashBalance + totalAmount);
@@ -80,11 +87,11 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
 
             //saving the transaction
             transactionDtlRepository.save(transactionDtl);
-            return new Response(true,"Stocks Purchased/sell Successfully");
+            return new Response(true,"Order Successfully");
 
         }
         catch (Exception e){
-            return new Response(true,"Stocks Purchase Failed");
+            return new Response(false,"Order Unsuccessful");
         }
     }
 
@@ -94,6 +101,7 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
     }
 
 
+    @Override
     public long getAvailableStocks(long userId, long stockId){
         try {
             long y = transactionDtlRepository.getSoldStocks(userId, stockId);
@@ -101,7 +109,6 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
             return ( x-y );
         }
         catch(Exception e){
-            System.out.print("getAvailableStocks Exception");
             return 0;
         }
     }
@@ -115,47 +122,65 @@ public class TransactionDtlServiceImpl implements TransactionDtlService{
     }
 
 
+    @Override
+    @Transactional
     public Response executeLimitOrders(TransactionDtl transactionDtl){
 
-        UserDtl user = userRepository.findByUsername(transactionDtl.getUser().getUsername());
-        Stocks stock = stocksRepository.findByStockSymbol(transactionDtl.getStock().getStockSymbol());
+        try {
 
-        double stockCurrentRate = transactionDtl.getPurchasedRate();
-        long stockQuantity = transactionDtl.getQuantity();
-        double currentCashBalance = user.getCashBalance();
-        double usedCashBalance = user.getUsedCash();
-        long purchasedStocks = stock.getPurchasedQuantity();
-        double totalAmount = stockQuantity * stockCurrentRate;
+            UserDtl user = userRepository.findByUsername(transactionDtl.getUser().getUsername());
+            Stocks stock = stocksRepository.findByStockSymbol(transactionDtl.getStock().getStockSymbol());
 
-        if(transactionDtl.getTransactionType() == 0){
-            //pre validations
-            if((purchasedStocks + stockQuantity) > stock.getTotalQuantity())
-                return new Response(true,"Stocks Purchase Failed");
+            if (user == null || stock == null)
+                return new Response(false, "Order Unsuccessful");
 
-            //updating stock attribute
-            stock.setPurchasedQuantity(purchasedStocks + stockQuantity);
+            double stockCurrentRate = transactionDtl.getPurchasedRate();
+            long stockQuantity = transactionDtl.getQuantity();
+            double currentCashBalance = user.getCashBalance();
+            double usedCashBalance = user.getUsedCash();
+            long purchasedStocks = stock.getPurchasedQuantity();
+            double totalAmount = stockQuantity * stockCurrentRate;
+
+            if (transactionDtl.getTransactionType() == 0) {
+                //pre validations
+//            if(user.getCashBalance() < totalAmount ||
+//                    (purchasedStocks + stockQuantity) > stock.getTotalQuantity())
+//                return new Response(true,"Stocks Purchase Failed");
+
+                //updating user attribute
+//            user.setCashBalance(currentCashBalance - totalAmount);
+//            user.setUsedCash(usedCashBalance + totalAmount);
+
+
+                //updating stock attribute
+                stock.setPurchasedQuantity(purchasedStocks + stockQuantity);
+            } else {
+                //pre validations
+                if (getAvailableStocks(user.getUserId(), stock.getStockId()) < stockQuantity)
+                    return new Response(false, "Stocks Sell Order Failed");
+
+                //updating user attribute
+                user.setCashBalance(currentCashBalance + totalAmount);
+                user.setUsedCash(usedCashBalance - totalAmount);
+
+
+                //updating stock attribute
+                stock.setPurchasedQuantity(purchasedStocks - stockQuantity);
+            }
+
+
+            //updating transaction attribute
+            transactionDtl.setTotalAmount(totalAmount);
+            transactionDtl.setPurchasedRate(stockCurrentRate);
+            transactionDtl.setUser(user);
+            transactionDtl.setStock(stock);
+
+            //saving the transaction
+            transactionDtlRepository.save(transactionDtl);
+            return new Response(true, "Order Successful");
         }
-        else {
-            //pre validations
-            if(getAvailableStocks(user.getUserId(), stock.getStockId()) < stockQuantity)
-                return new Response(true,"Stocks sell Failed");
-
-            //updating user attribute
-            user.setCashBalance(currentCashBalance + totalAmount);
-            user.setUsedCash(usedCashBalance - totalAmount);
-
-            //updating stock attribute
-            stock.setPurchasedQuantity(purchasedStocks - stockQuantity);
+        catch (Exception e){
+            return new Response(false, "Order Unsuccessful");
         }
-
-        //updating transaction attribute
-        transactionDtl.setTotalAmount(totalAmount);
-        transactionDtl.setPurchasedRate(stockCurrentRate);
-        transactionDtl.setUser(user);
-        transactionDtl.setStock(stock);
-
-        //saving the transaction
-        transactionDtlRepository.save(transactionDtl);
-        return new Response(true, "Executed Successfully");
     }
 }

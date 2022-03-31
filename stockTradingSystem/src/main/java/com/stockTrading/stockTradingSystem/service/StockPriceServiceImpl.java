@@ -45,5 +45,16 @@ public class StockPriceServiceImpl implements StockPriceService {
         return stockPriceRepository.updateTodayLowPrice();
     }
 
+    @Override
+    public double getCurrentPrice(long stockId) {
+        return stockPriceRepository.getCurrentPrice(stockId);
+    }
+
+    @Transactional
+    @Override
+    public int updateOpenPrice() {
+        return stockPriceRepository.updateOpenPrice();
+    }
+
 
 }

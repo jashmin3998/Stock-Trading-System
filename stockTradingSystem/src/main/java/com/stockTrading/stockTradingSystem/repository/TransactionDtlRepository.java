@@ -31,19 +31,19 @@ public interface TransactionDtlRepository extends JpaRepository<TransactionDtl, 
                     "x.price\n" +
                     "from\n" +
                     "(\n" +
-                    "    select s.stock_symbol, COALESCE(sum(d.quantity),0) as bq, COALESCE(sum(total_amount),0) as bt, s.price\n" +
+                    "    select s.stock_symbol, COALESCE(sum(d.quantity),0) as bq, COALESCE(sum(total_amount),0) as bt, sp.price\n" +
                     "\tfrom transaction_dtl d join stocks s \n" +
                     "\ton d.stock_id = s.stock_id join stock_price sp \n" +
                     "\ton s.stock_id = sp.stock_id where user_id = ?1 and d.transaction_type = 0\n" +
-                    "\tgroup by s.stock_symbol, s.price \n" +
+                    "\tgroup by s.stock_symbol, sp.price \n" +
                     ") as x\n" +
                     "left outer join \n" +
                     "(\n" +
-                    "    select s.stock_symbol, COALESCE(sum(d.quantity), 0) as sq, COALESCE(sum(total_amount),0) as st, s.price\n" +
+                    "    select s.stock_symbol, COALESCE(sum(d.quantity), 0) as sq, COALESCE(sum(total_amount),0) as st, sp.price\n" +
                     "\tfrom transaction_dtl d join stocks s \n" +
                     "\ton d.stock_id = s.stock_id join stock_price sp \n" +
                     "\ton s.stock_id = sp.stock_id where user_id = ?1 and d.transaction_type = 1\n" +
-                    "\tgroup by s.stock_symbol, s.price\n" +
+                    "\tgroup by s.stock_symbol, sp.price\n" +
                     ") as y on x.stock_symbol = y.stock_symbol;",
             nativeQuery = true
     )

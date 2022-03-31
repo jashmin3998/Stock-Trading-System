@@ -38,6 +38,7 @@ public class StocksController {
                 stock.getPrice(),
                 stock.getPrice(),
                 0,
+                stock.getPrice(),
                 stock);
 
         return stockPriceService.saveStockPrice(sp);

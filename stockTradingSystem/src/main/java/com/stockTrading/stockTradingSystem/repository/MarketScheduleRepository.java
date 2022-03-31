@@ -14,8 +14,10 @@ public interface MarketScheduleRepository extends JpaRepository<MarketSchedule, 
 
     @Modifying
     @Query(
-            value = "update market_schedule set start_time=?2, end_time = ?3, is_holiday = ?4 where today_date = ?1",
+            value = "update market_schedule set start_time=?2, end_time = ?3, is_holiday = ?4 where dates = ?1",
             nativeQuery = true
     )
     int updateMarketSchedule(LocalDate date, long startTime, long endTime, int isHoliday);
+
+    public MarketSchedule getMarketScheduleByDates(LocalDate date);
 }

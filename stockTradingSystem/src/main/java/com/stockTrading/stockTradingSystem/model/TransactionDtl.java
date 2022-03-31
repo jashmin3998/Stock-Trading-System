@@ -50,5 +50,13 @@ public class TransactionDtl {
     )
     private Stocks stock;
 
-
+    public TransactionDtl(long quantity, double purchasedRate, double totalAmount, long transactionTime, int transactionType, UserDtl user, Stocks stock) {
+        this.quantity = quantity;
+        this.purchasedRate = purchasedRate;
+        this.totalAmount = totalAmount;
+        this.transactionTime = transactionTime;
+        this.transactionType = transactionType;
+        this.user = user;
+        this.stock = stock;
+    }
 }

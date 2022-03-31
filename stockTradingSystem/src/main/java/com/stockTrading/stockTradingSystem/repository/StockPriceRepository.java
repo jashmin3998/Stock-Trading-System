@@ -13,7 +13,7 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Long> {
 
     @Modifying
     @Query(
-            value = "update stock_price set price = ((random()*(1+0.5)-0.5)*price*0.01)+price",
+            value = "update stock_price set price = ((random()*(1+0.5)-0.5)*price*0.0005)+price",
             nativeQuery = true
     )
     public int updateStockPrice();
@@ -31,4 +31,17 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Long> {
             nativeQuery = true
     )
     public int updateTodayLowPrice();
+
+    @Query(
+            value = "select price from stock_price where stock_id = ?1",
+            nativeQuery = true
+    )
+    public double getCurrentPrice(long stockId);
+
+    @Modifying
+    @Query(
+            value = "update stock_price set open_price = price",
+            nativeQuery = true
+    )
+    public int updateOpenPrice();
 }
