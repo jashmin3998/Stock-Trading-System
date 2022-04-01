@@ -13,7 +13,7 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Long> {
 
     @Modifying
     @Query(
-            value = "update stock_price set price = ((random()*(1+0.5)-0.5)*price*0.0005)+price",
+            value = "update stock_price set price = ((random()*(1)-0.5)*price*0.0005)+price",
             nativeQuery = true
     )
     public int updateStockPrice();
